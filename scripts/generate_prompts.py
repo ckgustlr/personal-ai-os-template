@@ -61,6 +61,12 @@ Generate:
 - Output SUCCESS / FAIL
 
 Return clearly separated sections.
+
+IMPORTANT:
+- Output ONLY valid Python code
+- Do NOT include explanations
+- Do NOT include markdown
+- Do NOT include comments outside code
 """
 
     # ✅ 핵심 수정

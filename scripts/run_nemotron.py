@@ -13,6 +13,13 @@ def log(task_path, message):
     with open(log_path, "a") as f:
         f.write(f"[{datetime.now()}] {message}\n")
 
+def is_valid_python(code):
+    try:
+        compile(code, "<string>", "exec")
+        return True
+    except:
+        return False
+
 
 def run_nemotron(task_path):
     try:
@@ -51,17 +58,23 @@ def run_nemotron(task_path):
 
         # 케이스 1: 일반 응답
         if "output" in data:
-            result_text = data["output"]
+            raw_text = data["output"]
+            result_text = extract_code(raw_text)
 
-        # 케이스 2: token 리스트
         elif "tokens" in data:
-            result_text = "".join(data["tokens"])
+            raw_text = "".join(data["tokens"])
+            result_text = extract_code(raw_text)
 
-        # 케이스 3: streaming 형태 (가정)
         elif isinstance(data, list):
+            raw_text = ""
             for item in data:
                 if "token" in item:
-                    result_text += item["token"]
+                    raw_text += item["token"]
+            result_text = extract_code(raw_text)
+
+        if not is_valid_python(result_text):
+            log(task_path, "❌ Python 코드 아님")
+            return
 
         if not result_text.strip():
             log(task_path, "❌ 생성된 코드가 비어 있음")
