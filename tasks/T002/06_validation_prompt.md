@@ -1,0 +1,13 @@
+
+- Confirm presence of file "Raw.xlsx" with worksheet "GMES_DB".
+- Verify that the Excel document is DRM protected and cannot be read by conventional libraries directly.
+- Run the Python script in an environment with xlwings and Excel installed.
+- Check that the program outputs a single line containing comma-separated values from the second column of all rows.
+- Verify that empty cells produce empty CSV entries.
+- Confirm that the output matches exactly the expected CSV format (e.g., 2026,1,DA,,,,,).
+- Test behavior when:
+  - File does not exist: script should fail gracefully with an error message.
+  - Worksheet "GMES_DB" is missing: script should fail gracefully.
+  - Excel app fails to open: proper error message should be printed.
+- Ensure no hanging Excel processes remain after execution.
+- Finally, output either "SUCCESS" if all tests pass or "FAIL" otherwise.
