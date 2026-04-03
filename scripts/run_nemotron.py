@@ -7,6 +7,15 @@ from datetime import datetime
 NEMOTRON_ENDPOINT = "http://your-nemotron-endpoint/api/generate"
 MODEL = "nemotron-cascade-2"
 
+def extract_code(text):
+    # ```python ... ``` 블록 추출
+    code_blocks = re.findall(r"```(?:python)?\n(.*?)```", text, re.DOTALL)
+
+    if code_blocks:
+        return "\n\n".join(code_blocks)
+
+    # fallback: 코드블록 없으면 전체 반환
+    return text
 
 def log(task_path, message):
     log_path = os.path.join(task_path, "run.log")
