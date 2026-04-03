@@ -2,7 +2,7 @@ import requests
 import os
 from datetime import datetime
 
-NEMOTRON_ENDPOINT = "http://your-nemotron-endpoint/api/generate"
+NEMOTRON_ENDPOINT = "http://10.240.250.37:11434/api/generate"
 
 def log(task_path, msg):
     log_path = os.path.join(task_path, "run.log")
