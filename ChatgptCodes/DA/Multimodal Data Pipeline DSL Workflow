@@ -1,0 +1,186 @@
+# Multimodal Data Pipeline DSL Workflow (Summary)
+
+## 1. Objective
+
+PPT(이미지) + Excel(Raw.xlsx) 기반의 분석 요구사항을
+자동으로 DSL → 실행 가능한 데이터 파이프라인으로 변환
+
+---
+
+## 2. Overall Architecture
+
+```text
+PPT (PNG)
+  ↓
+Qwen3-VL (멀티모달)
+  ↓
+PPT JSON (의도 / 프로세스)
+
+XLSX (Raw.xlsx)
+  ↓
+xlwings + pandas Parser
+  ↓
+Excel JSON (데이터 구조)
+
+[통합]
+  ↓
+Qwen3 → DSL 생성 (recipe.yaml)
+  ↓
+Nemotron → DSL 검증 (nemotron.yaml)
+  ↓
+clineSR → 실행 DSL 생성 (final_dsl.yaml)
+  ↓
+Python Code Generation
+  ↓
+Execution (pandas pipeline)
+```
+
+---
+
+## 3. Key Components
+
+### 3.1 PPT Multimodal Processing
+
+* 입력: 슬라이드 PNG
+* 모델: Qwen3-VL
+* 출력:
+
+  * objective
+  * process
+  * metrics
+  * data_requirements
+
+👉 역할: “분석 설계 추출”
+
+---
+
+### 3.2 Excel Parser
+
+* 파일: Raw.xlsx
+* 도구:
+
+  * xlwings → 시트/수식 추출
+  * pandas → 테이블 구조화
+* 출력: Excel JSON
+
+👉 역할: “실제 데이터 정의”
+
+---
+
+### 3.3 DSL 생성 (Qwen3)
+
+* 입력:
+
+  * PPT JSON (로직)
+  * Excel JSON (데이터)
+* 출력: `recipe.yaml`
+
+👉 특징:
+
+* process → steps 변환
+* metrics → formula 생성
+* Excel 컬럼 기반 계산
+
+---
+
+### 3.4 DSL 검증 (Nemotron)
+
+* 입력: recipe.yaml
+* 출력:
+
+  * issues
+  * corrected_dsl (nemotron.yaml)
+
+👉 검증 항목:
+
+* step 순서
+* 컬럼 존재 여부
+* 데이터 흐름
+* Raw.xlsx 의존성
+
+---
+
+### 3.5 실행 DSL 정제 (clineSR)
+
+* 입력: nemotron.yaml
+* 출력: final_dsl.yaml
+
+👉 특징:
+
+* pandas 실행 코드 포함
+* input / output 명시
+* DataFrame 흐름 정의
+* load 단계 자동 보완
+
+---
+
+### 3.6 코드 생성 및 실행
+
+* DSL → Python 코드 변환
+* pandas 기반 실행 함수 생성
+* Raw.xlsx 데이터 로드 후 실행
+
+---
+
+## 4. Data Flow Model
+
+```text
+PPT → "무엇을 할 것인가"
+XLSX → "무엇으로 할 것인가"
+
+→ DSL → "어떻게 할 것인가"
+```
+
+---
+
+## 5. Key Design Principles
+
+* **Multimodal Separation**
+
+  * PPT: 의도 / 로직
+  * Excel: 데이터
+
+* **DSL 중심 설계**
+
+  * 모든 로직은 DSL로 추상화
+  * DSL = 실행 계약서
+
+* **Role-Based LLM Pipeline**
+
+  * Qwen3-VL: 의미 추출
+  * Qwen3: DSL 생성
+  * Nemotron: 검증
+  * clineSR: 실행화
+
+* **Execution-Ready DSL**
+
+  * pandas 기준 즉시 실행 가능
+
+---
+
+## 6. Validation Strategy
+
+* 컬럼 존재 여부 검증 (Excel 기준)
+* step 간 DataFrame 흐름 검증
+* load 단계 강제
+* Raw.xlsx 데이터 소스 고정
+
+---
+
+## 7. Outcome
+
+* PPT 기반 요구사항 자동 해석
+* Excel 데이터 기반 자동 계산
+* DSL → 코드 자동 생성
+* 재사용 가능한 데이터 파이프라인 확보
+
+---
+
+## 8. Next Steps
+
+* 에러 로깅 및 재처리 구조 추가
+* DSL diff 기반 변경 추적
+* Report 자동 생성 (Excel/PDF)
+* 내부 서비스/API화
+
+---
