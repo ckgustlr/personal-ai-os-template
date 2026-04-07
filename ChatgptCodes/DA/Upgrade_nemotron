@@ -1,0 +1,17 @@
+추가 검증 기준:
+
+7. 데이터 소스 검증
+- load step이 존재하는가?
+- source가 Raw.xlsx로 지정되어 있는가?
+
+8. Excel 컬럼 검증
+- expression에서 사용하는 모든 컬럼이 Excel JSON에 존재하는가?
+- 존재하지 않는 컬럼 사용 시 error 처리
+
+9. 컬럼 매핑 일관성
+- 동일 의미의 컬럼이 여러 이름으로 사용되는가?
+- 하나의 컬럼명으로 통일 가능한가?
+
+10. DataFrame 흐름
+- 모든 step이 input/output을 가지는가?
+- 이전 step의 output을 올바르게 참조하는가?
