@@ -1,0 +1,207 @@
+🧠 [SYSTEM PROMPT - 절대 삭제 금지]
+
+You are a senior software architect and simulation engineer.
+
+Your task is to design and implement a Digital Manufacturing Simulation System inspired by TIMSIM.
+
+This is NOT a simple CRUD or dashboard application.
+
+This system must include:
+
+Graph-based scheduling engine
+Time-based simulation engine
+Physics-based motion calculation
+Real-time visualization synchronization
+
+You must prioritize:
+
+Correct system architecture over UI
+Deterministic simulation logic
+Extensibility for future industrial features
+
+Avoid:
+
+Monolithic design
+UI-first thinking
+Hardcoded logic
+🎯 [USER PROMPT - 핵심 요구사항]
+
+Build a production-grade prototype of a Tact Time Simulation System with the following architecture.
+
+1. SYSTEM OVERVIEW
+
+This system simulates an automated manufacturing line BEFORE physical construction.
+
+Core capabilities:
+
+Process sequence modeling (graph-based)
+Tact time calculation
+Bottleneck detection
+Motion-based timing simulation
+Real-time animation sync
+
+As described in TIMSIM:
+
+Sequence-based MCC (Machine Cycle Chart)
+Auto cycle generation
+Bottle neck visualization (delay detection)
+Image-based animation (not full 3D)
+2. TECH STACK (MANDATORY)
+Language: TypeScript
+Backend: Node.js
+Frontend: React
+Rendering: Canvas or SVG (NOT heavy 3D)
+State: Zustand or Redux Toolkit
+Graph processing: custom implementation (NO heavy external libs)
+3. CORE ARCHITECTURE
+
+Design the system with strict separation:
+
+3.1 Domain Layer
+
+Implement core entities:
+
+class Unit {
+  id: string
+  name: string
+  processes: Process[]
+}
+
+class Process {
+  id: string
+  name: string
+  duration: number
+  stroke?: number
+  dependencies: string[]
+  motionProfile?: MotionProfile
+}
+
+class MotionProfile {
+  acceleration: number
+  maxVelocity: number
+  deceleration: number
+}
+3.2 Scheduler Engine (CRITICAL)
+
+Implement:
+
+Directed Acyclic Graph (DAG)
+Topological sort
+Start/End time calculation
+
+Requirements:
+
+Handle parallel processes
+Handle dependency chains
+Detect invalid cycles (throw error)
+
+Output:
+
+type ScheduledProcess = {
+  processId: string
+  startTime: number
+  endTime: number
+}
+
+Also implement:
+
+Multi-cycle auto generation
+Continuous cycle without time conflict
+
+(Reflect TIMSIM auto cycle behavior )
+
+3.3 Simulation Engine
+
+Implement time-based simulation loop:
+
+simulate(time: number): SimulationState
+
+Features:
+
+Current active processes
+Unit positions (based on motion)
+Global timeline pointer
+3.4 Physics Engine
+
+Implement motion calculation:
+
+Constant velocity
+Acceleration/deceleration
+
+Function:
+
+getPositionAtTime(t: number, profile: MotionProfile): number
+3.5 Analytics Engine
+
+Implement:
+
+Tact Time calculation
+Cycle Time calculation
+Bottleneck detection
+
+Rules:
+
+Detect waiting time
+Mark delay segments
+
+Output:
+
+type Bottleneck = {
+  processId: string
+  delay: number
+}
+
+(Reflect “red line delay detection” )
+
+4. FRONTEND
+4.1 Navigator Panel
+Tree structure (Unit → Process)
+Editable properties
+4.2 Chart View (CORE UI)
+Gantt chart style MCC
+Time axis horizontal
+Processes as bars
+Dependency lines
+4.3 Animation View
+Image-based unit rendering
+Position update per frame
+Sync with simulation time
+
+(Important: DO NOT use 3D engines)
+
+5. SYNC ENGINE (VERY IMPORTANT)
+
+Implement real-time sync:
+
+Global clock
+Chart cursor (vertical line)
+Animation position
+
+Use:
+
+requestAnimationFrame
+6. IMPORT SYSTEM
+CSV / Excel parser
+Map into Process + Unit
+
+Support:
+
+Copy-paste style data ingestion
+7. OUTPUT FORMAT
+
+Provide:
+
+Folder structure
+Core engine code (Scheduler, Simulation, Physics)
+Basic React UI scaffold
+Example dataset
+Execution instructions
+8. CONSTRAINTS
+Code must be modular
+No fake implementations
+No placeholder logic
+Must be runnable
+9. BONUS (IF POSSIBLE)
+Zoom / Pan for chart
+Speed control (0.1x ~ 10x)
+Pause / Resume
